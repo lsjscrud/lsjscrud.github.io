@@ -5,3 +5,12 @@
 table {
     text-align: center;
 }
+
+#first_name,
+#last_name,
+#designation,
+#edit_first_name,
+#edit_last_name,
+#edit_designation {
+    text-transform: capitalize;
+}
