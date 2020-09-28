@@ -34,21 +34,18 @@ body {
 }
 
 #member_search {
-   width: 250px;
-   height: 32px;
-   border: 1px solid #ddd;
-   border-radius: 5px;
-   box-shadow: 0 0 3px #fff,
-   0 10px 15px #ebebeb inset;
-   font-size: 14px;
-   padding-left: 10px
+    width: 250px;
+    height: 32px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 0 3px #fff, 0 10px 15px #ebebeb inset;
+    font-size: 14px;
+    padding-left: 10px
 }
-
 
 .info-table-header-block {
     margin-bottom: 20px;
 }
-
 
 #member_search .fa-search {
     position: absolute;
@@ -69,7 +66,6 @@ body {
     text-decoration: none;
     -webkit-transition: color 0.2s;
 }
-
 
 .tag::after {
     background: #fff;
@@ -98,4 +94,21 @@ body {
 
 input[data-readonly] {
     pointer-events: none;
+}
+
+#member_table>thead>tr>th {
+    text-align: center;
+}
+
+table {
+    text-align: center;
+}
+
+#first_name,
+#last_name,
+#designation,
+#edit_first_name,
+#edit_last_name,
+#edit_designation {
+    text-transform: capitalize;
 }
