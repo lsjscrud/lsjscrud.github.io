@@ -1,3 +1,58 @@
+getMembers = () => {
+    // function getMembers() {
+    let memberRecord = localStorage.getItem("members");
+    if (!memberRecord)
+        return [];
+    else
+        return JSON.parse(memberRecord);
+}
+calculateAge = date => {
+    var today = new Date();
+    var birthDate = new Date(date);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate()))
+        age--;
+    return age;
+}
+getTableData = () => {
+    $("#member_table").find("tr:not(:first)").remove();
+    var searchKeyword = $('#member_search').val();
+    var filteredMembers = getMembers().filter(item => {
+        return item.first_name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+            item.last_name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+            item.email.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+            item.designation.toLowerCase().includes(searchKeyword.toLowerCase())
+    });
+    if (!filteredMembers.length)
+        $('.show-table-info').removeClass('hide');
+    else
+        $('.show-table-info').addClass('hide');
+    filteredMembers.forEach((item, index) => {
+        insertIntoTableView(item, index + 1);
+    })
+}
+insertIntoTableView = (item, tableIndex) => {
+    let row = $('#member_table')[0].insertRow();
+    row.insertCell(0).innerHTML = tableIndex;
+    row.insertCell(1).innerHTML = item.first_name;
+    row.insertCell(2).innerHTML = item.last_name;
+    row.insertCell(3).innerHTML = item.email;
+    row.insertCell(4).innerHTML = new Date(item.d_o_b).toLocaleDateString('vi', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    row.insertCell(5).innerHTML = calculateAge(item.d_o_b);
+    row.insertCell(6).innerHTML = '<a class="tag">' + item.designation + '</a>';
+    let guid = item.id;
+    row.insertCell(7).innerHTML = '<button class="btn btn-sm btn-default" onclick="showMemberData(' + guid + ')">View</button> ' +
+        '<button class="btn btn-sm btn-primary" onclick="showEditModal(' + guid + ')">Edit</button> ' +
+        '<button class="btn btn-sm btn-danger" onclick="showDeleteModal(' + guid + ')">Delete</button>';
+    row.insertCell(8).innerHTML = guid;
+}
+
 (() => {
     getTableData();
     $("#d_o_b").datepicker({
@@ -64,71 +119,13 @@ saveMemberInfo = () => {
     }
 }
 
-function getMembers() {
-    let memberRecord = localStorage.getItem("members");
-    if (!memberRecord)
-        return [];
-    else
-        return JSON.parse(memberRecord);
-}
-
-function calculateAge(date) {
-    var today = new Date();
-    var birthDate = new Date(date);
-    var age = today.getFullYear() - birthDate.getFullYear();
-    var m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate()))
-        age--;
-    return age;
-}
-
-function getFormattedMembers() {
+getFormattedMembers = () => {
     var members = getMembers();
     members.forEach(item => {
         item.d_o_b = calculateAge(item.d_o_b);
     });
     return members;
 }
-
-function getTableData() {
-    $("#member_table").find("tr:not(:first)").remove();
-    var searchKeyword = $('#member_search').val();
-    var filteredMembers = getMembers().filter(item => {
-        return item.first_name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-            item.last_name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-            item.email.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-            item.designation.toLowerCase().includes(searchKeyword.toLowerCase())
-    });
-    if (!filteredMembers.length)
-        $('.show-table-info').removeClass('hide');
-    else
-        $('.show-table-info').addClass('hide');
-    filteredMembers.forEach((item, index) => {
-        insertIntoTableView(item, index + 1);
-    })
-}
-
-function insertIntoTableView(item, tableIndex) {
-    let row = $('#member_table')[0].insertRow();
-    row.insertCell(0).innerHTML = tableIndex;
-    row.insertCell(1).innerHTML = item.first_name;
-    row.insertCell(2).innerHTML = item.last_name;
-    row.insertCell(3).innerHTML = item.email;
-    row.insertCell(4).innerHTML = new Date(item.d_o_b).toLocaleDateString('vi', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-    row.insertCell(5).innerHTML = calculateAge(item.d_o_b);
-    row.insertCell(6).innerHTML = '<a class="tag">' + item.designation + '</a>';
-    let guid = item.id;
-    row.insertCell(7).innerHTML = '<button class="btn btn-sm btn-default" onclick="showMemberData(' + guid + ')">View</button> ' +
-        '<button class="btn btn-sm btn-primary" onclick="showEditModal(' + guid + ')">Edit</button> ' +
-        '<button class="btn btn-sm btn-danger" onclick="showDeleteModal(' + guid + ')">Delete</button>';
-    row.insertCell(8).innerHTML = guid;
-}
-
 showMemberData = id => {
     let member = getMembers().find(item => {
         return item.id == id;
