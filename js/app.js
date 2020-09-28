@@ -28,12 +28,23 @@ checkEmail = (mems) => {
         emailArr.push(mem['email']);
     return Object.keys(dup(emailArr)).length
 }
+capitalLetter = (str) => {
+    str = str.split(" ");
+    for (const i in str)
+        if (str.hasOwnProperty(i))
+            str[i] = str[i][0].toUpperCase() + str[i].substr(1);
+    return str.join(" ");
+}
 saveMemberInfo = () => {
     let obj = {};
     ['first_name', 'last_name', 'email', 'd_o_b', 'designation'].forEach(item => {
         let result = $('#' + item)[0].value;
-        if (result)
-            obj[item] = result;
+        if (result) {
+            if (item == 'first_name' || item == 'last_name' || item == 'designation')
+            // obj[item] = result.replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase()))); // với Eng thì đc
+                obj[item] = capitalLetter(result);
+            else obj[item] = result;
+        }
     });
     let members = getMembers();
     if (!members.length)
@@ -148,11 +159,11 @@ updateMemberData = () => {
     let member = allMembers.find(item => {
         return item.id == $('#member_id').val();
     })
-    member.first_name = $('#edit_first_name').val();
-    member.last_name = $('#edit_last_name').val();
+    member.first_name = capitalLetter($('#edit_first_name').val());
+    member.last_name = capitalLetter($('#edit_last_name').val());
     member.email = $('#edit_email').val();
     member.d_o_b = $('#edit_d_o_b').val();
-    member.designation = $('#edit_designation').val();
+    member.designation = capitalLetter($('#edit_designation').val());
     if (checkEmail(allMembers)) {
         alert('Dia chi email nay da ton tai')
         return
